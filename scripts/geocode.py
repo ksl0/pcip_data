@@ -1,6 +1,8 @@
 # 01/14/2014
 # A combination of notes and code from the python tutorial
 # UC4P - 'uncomment for plot'
+#TODO add a catch for when the address does not return results
+
 import csv as csv
 import numpy as np
 import ipdb
@@ -38,32 +40,44 @@ def format_address(base_url, address, bound):
 ##returns a list with latitude, longitute, and the address
 def get_data(url): 
     print url
-    singularAddress = []
     data = req.get(url).json()
-    return singularAddress 
+    dictionary = {}
+    adrs = data['results'][0]['formatted_address'].encode()
+    lat = data['results'][0]['geometry']['location']['lat'] 
+    lng = data['results'][0]['geometry']['location']['lng'] 
+    dictionary = {'address_f': [adrs], 'lat': [lat], 'lng': [lng]} 
+    return dictionary 
 
 #needs to have an address column in df
-def populate_claremont_address(dataFrame): 
-    lat = [] 
-    lon = [] 
-    address_formed = [] 
-    
+#returns the series object
+
+dct = {}
+def populate_claremont_address(dataFrame, bounds): 
+    dct['lat'] = [] 
+    dct['lng'] = []
+    dct['address_f'] = []
     for i in dataFrame.Address: 
-        if (math.isnan(i)):
-           lat.append(np.nan) 
-           lon.append(np.nan) 
-           address_formed(np.nan)
+        if (pd.isnull(i)):
+           dct['lat'].append(np.nan) 
+           dct['lng'].append(np.nan) 
+           dct['address_f'].append(np.nan)
         else:
-           lat.append(
+    	   url = format_address(base_url, i, bounds)
+           print url
+           nDict = get_data(url)
+           dct['lat'].append(nDict["lat"][0]) 
+           dct['lng'].append(nDict["lng"][0])
+           dct['address_f'].append(nDict["address_f"][0])
            
-    
-	      
 
 #if __name__=="__main__":
 
+bounds =  claremontCityLimits();
 df['url'] = df.Address.map(lambda x: format_address(base_url, x, bounds))
-df['lat'] = np.nan
-df['lon'] = np.nan
-df['address_formatted'] = np.nan
+
+#df.append(s, ignore_index=True)
+
+#test dataframe
 
 
+testDF = pd.DataFrame(df.Address[0:3])
