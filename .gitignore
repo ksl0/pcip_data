@@ -1,3 +1,6 @@
 *keys.py
 *.pyc
 venv/
+#data files
+csv/
+papers
