@@ -4,3 +4,4 @@ venv/
 #data files
 csv/
 papers
+.DS_STORE

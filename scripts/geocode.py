@@ -14,7 +14,7 @@ import keys
 import time
 import math
 # the debugger
-# ipdb.set_trace()
+#ipdb.set_trace()
 
 df = pd.read_csv('../csv/retrofit.csv', header=0)
 base_url ='https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}&bounds={2}'
@@ -38,46 +38,58 @@ def format_address(base_url, address, bound):
   return formatted 
 
 ##returns a list with latitude, longitute, and the address
+bad_urls = {}
 def get_data(url): 
-    print url
     data = req.get(url).json()
     dictionary = {}
-    adrs = data['results'][0]['formatted_address'].encode()
-    lat = data['results'][0]['geometry']['location']['lat'] 
-    lng = data['results'][0]['geometry']['location']['lng'] 
+    print data
+    if (len(data['results']) == 0): 
+       adrs = np.nan
+       lat = np.nan
+       lng = np.nan
+       bad_urls["url"] = [url]
+    else: 
+      adrs = data['results'][0]['formatted_address'].encode('ascii', 'ignore')
+      lat = data['results'][0]['geometry']['location']['lat'] 
+      lng = data['results'][0]['geometry']['location']['lng'] 
+      
     dictionary = {'address_f': [adrs], 'lat': [lat], 'lng': [lng]} 
     return dictionary 
 
 #needs to have an address column in df
 #returns the series object
 
-dct = {}
 def populate_claremont_address(dataFrame, bounds): 
+    dct = {}
     dct['lat'] = [] 
     dct['lng'] = []
     dct['address_f'] = []
     for i in dataFrame.Address: 
+        print i
+        time.sleep(0.2) #make sure not to exceed API limits
         if (pd.isnull(i)):
            dct['lat'].append(np.nan) 
            dct['lng'].append(np.nan) 
            dct['address_f'].append(np.nan)
         else:
     	   url = format_address(base_url, i, bounds)
-           print url
            nDict = get_data(url)
            dct['lat'].append(nDict["lat"][0]) 
            dct['lng'].append(nDict["lng"][0])
            dct['address_f'].append(nDict["address_f"][0])
+    return dct 
            
 
-#if __name__=="__main__":
+if __name__=="__main__":
+  bounds =  claremontCityLimits();
+  df['url'] = df.Address.map(lambda x: format_address(base_url, x, bounds))
 
-bounds =  claremontCityLimits();
-df['url'] = df.Address.map(lambda x: format_address(base_url, x, bounds))
+  dct = populate_claremont_address(df, bounds)
+  newDF =pd.DataFrame(dct) 
+  
+  notes = pd.DataFrame(bad_urls)
+  results = pd.concat([df, newDF] , axis =1)
+  results.to_csv('../csv/out.csv')
+  notes.to_csv('../csv/notes.csv')
 
-#df.append(s, ignore_index=True)
 
-#test dataframe
-
-
-testDF = pd.DataFrame(df.Address[0:3])
