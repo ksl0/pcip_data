@@ -15,10 +15,10 @@ import time
 import math
 # the debugger
 #ipdb.set_trace()
-
 df = pd.read_csv('../csv/retrofit.csv', header=0)
-base_url ='https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}&bounds={2}'
+base_url ='https://maps.googleapis.com/maps/api/geocode/json?address={0}&bounds={2}&key={1}'
 key = keys.API_KEY
+city = "claremont"
 
 # from http://www.maptechnica.com/us-city-boundary-map/city/Claremont/state/CA/cityid/0613756
 def claremontCityLimits(): 
@@ -33,7 +33,9 @@ def format_address(base_url, address, bound):
   if (pd.isnull(address)): 
     formatted = np.nan
   else: 
-    a = "+".join(address.split())
+    atemp = (address.split())
+    atemp.append(city)
+    a = "+".join(atemp)
     formatted = base_url.format(a, key, bound)
   return formatted 
 
@@ -86,7 +88,8 @@ if __name__=="__main__":
 
   dct = populate_claremont_address(df, bounds)
   newDF =pd.DataFrame(dct) 
-  
+  #make sure the urls are private
+  df = df.drop('url', 1)  
   notes = pd.DataFrame(bad_urls)
   results = pd.concat([df, newDF] , axis =1)
   results.to_csv('../csv/out.csv')
