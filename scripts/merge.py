@@ -32,4 +32,10 @@ rep = df_cherp_only.groupby(['Name'])['REP'].sum()
 listOutput = [house, dem, rep] 
 result = pd.concat(listOutput, axis=1)
 
+result.to_csv('../csv/politics.csv')
+"""
+writer = pd.ExcelWriter('output.xlsx')
+result.to_excel(writer, 'Data_Analytics')
+writer.save() """ 
+## TODO import some stuff, reformate the mapping of the dataframe >.<
 
