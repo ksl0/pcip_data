@@ -43,9 +43,12 @@ df["math"] = df['What is the highest level of math that you have taken?'] \
 df_girls = df[df.gender ==1]
 df_boys = df[df.gender ==0]
 
-patternCs51 = re.compile('CS 51')
-df['first_class'] = df['What CS course(s) are your currently taking?'] \
+
+patternCs51 = re.compile('CS 51$')
+df['intro_class'] = df['What CS course(s) are your currently taking?'] \
                     .map(lambda u: 1 if (patternCs51.match(u)) else 0) 
+
+
 df_51_only = df[df.first_class ==1]
 df_51 = pd.concat([df_51_only.gender, df_51_only['How many hours a week do you spend working on CS outside of class and lab?']], axis=1)
 
