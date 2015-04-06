@@ -34,16 +34,13 @@ df['gender_predicted'] = df.name_first.map(lambda u: d.get_gender(u))
 df["gender2"]= df.gender_predicted.map(binaryGenderFunction)
 df_analysis= df[["address", "name_first", "name_last", "gender2", "Age","party"]]
 
-##TODO: add a for loop to make combinations of each item in the potential grouped by   
-# Goal: spit out number of children, 
 # currently f doesn't do anything, but should do something interesting soon
 
-f = lambda u: map(lambda pair: isHetero(pair)==1,list(iters.combinations(u.iterrows(),2)))[0]
-
+marriageFun = lambda u: "married" if (True in map(lambda pair: (isHetero(pair)==1 & ageAppropriateMarriage(pair)==1),list(iters.combinations(u.iterrows(),2)))) else "none"
 
 
  ## 1 if True in map(lambda u: list(iters.combinations(df_analysisiterrws(),2))
 
-df_analysis.groupby(['address']).apply(f)
+df_analysis.groupby(['address']).apply(marriageFun)
 
 
