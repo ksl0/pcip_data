@@ -39,10 +39,10 @@ print "done finding mapping gender"
 ##ranking algorithm 
 df["rank"] = df.apply(lambda u: u["real_age"] +u["gender2"] + u["owner"], axis=1)
 
+print "finished with rank"
+
 result = df.sort(['rank'], ascending=False).groupby(['address']).apply(lambda u: u.head(1))
-
-result.to_csv('../csv/headOfHousehold.csv')
-
+result[["Age", "gender", "gender2", "rank", "name_last", "name_first", "owner", "stOwnerAsseeName"]].to_csv("initial_result.csv")
 
 
 
