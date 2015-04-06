@@ -16,7 +16,7 @@ df_vote = df_vote.rename(columns = {'mail_street':'Address'})
 df_fit = pd.merge(df_retrofit, df_vote, how='outer', on='Address')
 
 ### keep only cherp data
-df_cherp_only = df_fit[df_fit.Name.isnull()==False]
+df_cherp_only = df_fit[df_fit.Name.isnull()==True]
 
 ## add columns in occupants, republicans, democrats, other, 
 ## 1 indicated in the party, otherwise they are not
@@ -32,7 +32,7 @@ rep = df_cherp_only.groupby(['Name'])['REP'].sum()
 listOutput = [house, dem, rep] 
 result = pd.concat(listOutput, axis=1)
 
-result.to_csv('../csv/politics.csv')
+result.to_csv('../csv/politicsFuckYou.csv')
 """
 writer = pd.ExcelWriter('output.xlsx')
 result.to_excel(writer, 'Data_Analytics')

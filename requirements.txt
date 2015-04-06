@@ -18,6 +18,8 @@ requests==2.5.1
 rsa==3.1.4
 scikit-learn==0.15.2
 scipy==0.15.0
+# determines the gender 
+SexMachine==0.1.1
 simplejson==3.6.5
 six==1.9.0
 uritemplate==0.6

@@ -1,12 +1,15 @@
-## 03/06/2015
-## script to merge datasets and add a few columns
+## 03/21/2015
+## add variables: 
+## 1. gender 2. party affiliation 3. marriage 
+## 4. head of the household
+
 import csv as csv
 import numpy as np
 import ipdb
 import pandas as pd
 #import pylab as P
 
-## get the retrofit and the voter files
+## import the needed data, contains all resident data
 df_retrofit = pd.read_csv("../csv/retrofit.csv", header=0) 
 df_vote = pd.read_csv('../csv/vote.csv', header=0) 
 
